@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+
+<body>
+<div class="code-editor">
+  <div class="line-numbers"></div>
+  <textarea class="code-input"></textarea>
+</div>
+
+<style>
+  .code-editor {
+    display: flex;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    font-family: monospace;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .line-numbers {
+    background: #eee;
+    padding: 10px;
+    text-align: right;
+    user-select: none;
+    position: relative;
+  }
+
+  .line-numbers div {
+    line-height: 1.5;
+    color: #999;
+    position: relative;
+  }
+
+  .fold-toggle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 10px;
+    height: 20px;
+    cursor: pointer;
+    color: #666;
+    text-align: center;
+  }
+
+  .code-input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    outline: none;
+    resize: none;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: auto;
+  }
+</style>
+
+<script>
+  const editor = document.querySelector('.code-editor');
+  const lineNumbers = document.querySelector('.line-numbers');
+  const codeInput = document.querySelector('.code-input');
+
+  function updateLineNumbers() {
+    const lines = codeInput.value.split('\n').length;
+    lineNumbers.innerHTML = '';
+
+    for (let i = 1; i <= lines; i++) {
+      const lineDiv = document.createElement('div');
+      const foldToggle = document.createElement('span');
+      
+      foldToggle.className = 'fold-toggle';
+      foldToggle.textContent = '▶️';  // Placeholder for fold/unfold
+
+      foldToggle.addEventListener('click', () => toggleFold(i));
+      
+      lineDiv.textContent = i;
+      lineDiv.append(foldToggle);
+
+      lineNumbers.appendChild(lineDiv);
+    }
+  }
+
+  function toggleFold(lineNumber) {
+    const lines = codeInput.value.split('\n');
+    const startLine = lineNumber - 1;
+    let endLine = startLine;
+
+    // Find the range of lines to fold/unfold
+    for (let i = startLine + 1; i < lines.length; i++) {
+      if (lines[i].trim().startsWith('}')) {
+        endLine = i;
+        break;
+      }
+    }
+
+    // Toggle fold
+    const isFolded = lines[startLine].includes('/*fold*/');
+    if (isFolded) {
+      for (let i = startLine; i <= endLine; i++) {
+        lines[i] = lines[i].replace('/*fold*/', '');
+      }
+    } else {
+      for (let i = startLine; i <= endLine; i++) {
+        lines[i] = '/*fold*/' + lines[i];
+      }
+    }
+
+    codeInput.value = lines.join('\n');
+    updateLineNumbers();
+    syncScroll();
+  }
+
+  function syncScroll() {
+    lineNumbers.scrollTop = codeInput.scrollTop;
+  }
+
+  codeInput.addEventListener('input', updateLineNumbers);
+  codeInput.addEventListener('scroll', syncScroll);
+
+  // Initialize line numbers on page load
+  updateLineNumbers();
+</script>
+</body>
+
+</html>
