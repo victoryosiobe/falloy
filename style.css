@@ -1,10 +1,11 @@
 :root {
   --theme: rgb(17, 25, 36);
-  --theme-opp: rgb(153,157,164);
+  --theme-opp: rgb(153, 157, 164);
   --sync-padd-top: 10px;
   --nav-container-height: 70px;
   --editor-height: calc(100vh - var(--nav-container-height));
-  scrollbar-width: 0;
+  --editor-height: 100vh;
+  --scrollbar-width: 0;
   --openTagColor: rgba(65, 150, 255, 1);
   --editor-base-color: rgb(150, 150, 150);
   --attributeColor: rgb(193, 226, 250);
@@ -84,16 +85,18 @@ body {
   background: transparent;
   box-sizing: border-box;
   height: var(--editor-height) !important;
-  margin-top: var(--nav-container-height);
+  /* margin-top: var(--nav-container-height); */
 }
 
 #line-number-container {
-  padding: 0;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  
   position: absolute;
   height: 100%;
   color: var(--theme-opp);
   z-index: 3;
-  text-align: ;
+  text-align: right;
   overflow-y: scroll;
   background: var(--theme);
   padding-top: var(--sync-padd-top);
@@ -169,14 +172,17 @@ body {
   box-sizing: border-box;
   z-index: 5;
 }
-#keyx{
+
+#keyx {
   display: flex;
   flex-direction: row;
   text-align: center;
+  z-index: 4;
 }
+
 #keyx>span {
- flex-grow: 1;
- padding: 1rem;
+  flex-grow: 1;
+  padding: 1rem;
 }
 
 .flash-bg {
@@ -191,11 +197,11 @@ body {
   0% {
     background: rgba(255, 255, 255, 1);
   }
-
+  
   50% {
     background: rgba(255, 255, 255, 0.5);
   }
-
+  
   100% {
     background: rgba(255, 255, 255, 0.1);
   }

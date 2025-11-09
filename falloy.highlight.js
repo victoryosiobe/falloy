@@ -10,7 +10,7 @@ class Falloy {
     const end = `</span>`
     el.innerHTML = e.replace(startTagDetect, (match) => colorize("tag") + match + end)
   //  console.log(e.match(startTagDetect))
-    console.log(e.match(startTagDetect), el.innerText, el.innerHTML)
+ //   console.log(e.match(startTagDetect), el.innerText, el.innerHTML)
   }
 
 

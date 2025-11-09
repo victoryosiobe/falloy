@@ -25,23 +25,23 @@ function lineNumberAdjuster(event) {
   if (event.inputType === "insertLineBreak") {
     // Enter key is pressed
     //console.log(lineNumber++)
-    lineNumberCon.innerText += String(++lineNumber + '\n')
+    lineNumberCon.innerText += '\n' + ++lineNumber
     //console.log(lineNumber.lastElementChild.innerText)
     //lineNumberCon.appendChild(number)
   }
-
-  const totalRealLineBreaks = editor.value.split('').filter(e => e === '\n').length + 1 //+1 due to 1 put there even without any content
+  
+  const totalRealLineBreaks = editor.value.split(/\n/).length;
   /*if(totalRealLineBreaks > 15) editorCon.style.paddingBottom = "10em"
   else editorCon.style.paddingBottom = "0"*/
+  // Always check for mismatch (covers deletes, pastes, etc.)
   if (lineNumber !== totalRealLineBreaks) {
-    const arrFilledWithCorrectLineCount = Array(totalRealLineBreaks).fill(0).map((_, index) => index + 1);
-    // console.log(totalRealLineBreaks, arrFilledWithCorrectLineCount)
-
-    lineNumberCon.innerText = arrFilledWithCorrectLineCount.join('\n')
-    // console.log(lineNumberCon.style.paddingLeft);
+    const correctLines = Array.from({ length: totalRealLineBreaks }, (_, i) => i + 1).join('\n');
+    lineNumberCon.innerText = correctLines;
+    lineNumber = totalRealLineBreaks; // Reset to match!
+    
     updateTextareaPadding()
   }
-
+  
 }
 
 function debounce(func, delay) {
@@ -73,10 +73,10 @@ const updateTextareaPadding = () => {
 function lineNumberConShadSync() {
   const scrollAmount = editor.scrollLeft;
   const threshold = 10; // Change this value to the amount of pixels you want to detect
-
-  if (scrollAmount >= threshold) lineNumberCon.style.boxShadow = '0 0 5px black' //Element has been scrolled', threshold, 'pixels to the right.
-  else lineNumberCon.style.boxShadow = '0 0 0 transparent'
-
+  if (scrollAmount >= threshold)
+    lineNumberCon.style.boxShadow = '3px 0 5px -2px black';
+  else 
+    lineNumberCon.style.boxShadow = 'none';
 }
 
 function lineNumber_Editor_Vertical_Sync_Scroll() {
@@ -95,10 +95,10 @@ function updateRenderElem(text) {
   }
   //console.log(encryptText)
   editorRenderer.innerHTML = text.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;").replace(new RegExp("<", "g"), "&gt;");
-
+  
   // Text containing color names
   //const text = "The sky is blue and the grass is green.";
-
+  
   // Define color names and their corresponding hex values
   const colors = {
     blue: '#0000FF',
@@ -106,12 +106,12 @@ function updateRenderElem(text) {
     red: 'red',
     orange: 'orange',
     purple: 'purple',
-
+    
   };
-
+  
   // Create a regular expression to match color names
   const colorReg = new RegExp(`\\b(${Object.keys(colors).join('|')})\\b`, 'gi');
-
+  
   // Replace color names with spans containing the same color
   const formattedText = text.replace(colorReg, (match, colorName) => {
     const colorHex = colors[colorName.toLowerCase()];
@@ -119,7 +119,7 @@ function updateRenderElem(text) {
   });
   new Falloy().highlight(editorRenderer)
   // editorRenderer.innerHTML = new Falloy().highlight(editorRenderer, "html")
-
+  
   //console.log(Prism)
   //Prism.highlightElement(editorRenderer)
   editorRenderer.scrollHeight = editor.offsetHeight
@@ -129,15 +129,15 @@ function updateRenderElem(text) {
 function isCursorAtEndOfLastLine(textarea) {
   const cursorPos = textarea.selectionStart;
   const textareaValue = textarea.value;
-
+  
   // Find the index of the last newline character before the cursor position
   const lastNewlineIndex = textareaValue.lastIndexOf('\n', cursorPos);
-
+  
   // If there are no newline characters before the cursor, it's not at the end of the last line
   if (lastNewlineIndex === -1) {
     return false;
   }
-
+  
   // Check if the cursor is at the end of the last line
   return cursorPos === textareaValue.length || cursorPos === lastNewlineIndex + 1;
 }
@@ -155,10 +155,10 @@ function changeColor(event) {
     else event.target.classList.add('active-key')
   }
   if (!event.target.classList.contains('joint')) Array.from(keyx.children).forEach(child => child.classList.remove('active-key'))
-
+  
   // if (event.target.classList.contains('active-key')) event.target.classList.remove('active-key')
   //  else event.target.classList.add('active-key')
-
+  
 }
 Array.from(keyx.children).forEach(child => child.addEventListener('click', changeColor))
 document.addEventListener('click', (e) => {
